@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fff7fa">
+  <title>Our Little Corner ♡</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --pink: #e783a5;
+      --deep-pink: #bd587d;
+      --pale-pink: #fff1f6;
+      --ink: #573b47;
+      --muted: #9b7d88;
+      --paper: #fffdfd;
+      --shadow: 0 18px 55px #b85b7b17;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 8% 12%, #ffe1ec 0, transparent 26rem),
+        radial-gradient(ellipse at 94% 48%, #ffeaf1 0, transparent 25rem),
+        #fff9fb;
+      font-family: "Segoe UI", "Trebuchet MS", sans-serif;
+    }
+
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+
+    .page { width: min(1050px, calc(100% - 36px)); margin: 0 auto; padding: 28px 0 52px; }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px;
+    }
+
+    .brand { display: flex; align-items: center; gap: 9px; color: var(--deep-pink); font-size: .92rem; font-weight: 700; letter-spacing: .03em; }
+    .brand-heart { font-size: 1.4rem; }
+    .top-note { color: var(--muted); font-size: .82rem; }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(36px, 8vw, 78px) 24px clamp(36px, 7vw, 68px);
+      border: 1px solid #f8e7ed;
+      border-radius: 30px;
+      background: linear-gradient(135deg, #fff 5%, #fff8fb 58%, #fff0f5);
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .hero::before, .hero::after {
+      position: absolute;
+      color: #efb8ca;
+      content: "♡";
+      font-family: Georgia, serif;
+      pointer-events: none;
+    }
+
+    .hero::before { top: 24px; left: 8%; font-size: 2rem; transform: rotate(-15deg); }
+    .hero::after { right: 9%; bottom: 20px; font-size: 2.6rem; transform: rotate(12deg); }
+    .eyebrow { margin: 0 0 12px; color: var(--deep-pink); font-size: .75rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; }
+    h1 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: clamp(2.6rem, 8vw, 5rem); font-weight: 400; letter-spacing: -.055em; line-height: 1.05; }
+    h1 span { color: var(--pink); }
+    .hero-copy { max-width: 450px; margin: 16px auto 24px; color: var(--muted); font-size: 1rem; line-height: 1.7; }
+
+    .button {
+      display: inline-flex;
+      min-height: 46px;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 0 21px;
+      border: 0;
+      border-radius: 999px;
+      background: var(--pink);
+      box-shadow: 0 7px 18px #dc789a3b;
+      color: white;
+      font-weight: 700;
+      transition: background .2s, transform .2s, box-shadow .2s;
+    }
+
+    .button:hover { transform: translateY(-2px); background: var(--deep-pink); box-shadow: 0 10px 22px #dc789a4d; }
+    .button:focus-visible, .icon-button:focus-visible, input:focus-visible { outline: 3px solid #edabc1; outline-offset: 3px; }
+    .button-secondary { border: 1px solid #f2dce4; background: white; box-shadow: none; color: var(--deep-pink); }
+    .button-secondary:hover { background: var(--pale-pink); color: var(--deep-pink); }
+
+    .gallery-section { padding-top: 40px; }
+    .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 15px; margin-bottom: 18px; }
+    h2 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: clamp(1.7rem, 5vw, 2.15rem); font-weight: 400; letter-spacing: -.03em; }
+    .memory-count { margin: 7px 0 0; color: var(--muted); font-size: .88rem; }
+
+    .empty-state {
+      padding: 43px 20px;
+      border: 1px dashed #eacbd7;
+      border-radius: 22px;
+      background: #ffffffa6;
+      text-align: center;
+    }
+
+    .empty-illustration { display: grid; width: 68px; height: 68px; place-items: center; margin: 0 auto 15px; border-radius: 22px; background: var(--pale-pink); font-size: 2rem; transform: rotate(-5deg); }
+    .empty-state h3 { margin: 0 0 7px; font-family: Georgia, "Times New Roman", serif; font-size: 1.35rem; font-weight: 400; }
+    .empty-state p { margin: 0; color: var(--muted); font-size: .9rem; }
+
+    .gallery { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+    .photo-card { overflow: hidden; padding: 9px 9px 14px; border: 1px solid #f4e7ec; border-radius: 19px; background: var(--paper); box-shadow: 0 9px 28px #8144590b; animation: appear .35s ease both; }
+    .photo-card img { display: block; width: 100%; aspect-ratio: 1 / 1; border-radius: 12px; background: var(--pale-pink); object-fit: cover; }
+    .photo-details { display: flex; align-items: start; justify-content: space-between; gap: 8px; padding: 11px 3px 0; }
+    .photo-caption { overflow-wrap: anywhere; margin: 0; font-size: .9rem; font-weight: 650; }
+    .photo-date { margin: 4px 0 0; color: var(--muted); font-size: .75rem; }
+    .icon-button { display: grid; flex: 0 0 32px; width: 32px; height: 32px; place-items: center; border: 0; border-radius: 50%; background: transparent; color: #b48b99; font-size: 1rem; }
+    .icon-button:hover { background: var(--pale-pink); color: var(--deep-pink); }
+
+    footer { padding-top: 42px; color: #ac8996; font-family: Georgia, "Times New Roman", serif; font-size: .94rem; text-align: center; }
+    footer span { color: var(--pink); }
+
+    .dialog-backdrop { position: fixed; z-index: 3; inset: 0; display: grid; place-items: center; padding: 18px; background: #492d3a66; }
+    .dialog-backdrop[hidden] { display: none; }
+    .dialog { width: min(440px, 100%); padding: 27px; border: 1px solid #f4e4ea; border-radius: 24px; background: white; box-shadow: 0 24px 70px #48233933; }
+    .dialog h2 { font-size: 1.8rem; }
+    .dialog-intro { margin: 9px 0 20px; color: var(--muted); font-size: .9rem; line-height: 1.5; }
+    .field-label { display: block; margin: 16px 0 7px; font-size: .83rem; font-weight: 700; }
+    .text-input, .file-input { width: 100%; min-height: 45px; padding: 10px 12px; border: 1px solid #eddbe2; border-radius: 12px; background: #fffafb; color: var(--ink); }
+    .file-input { padding: 8px; }
+    .file-input::file-selector-button { margin-right: 10px; padding: 7px 10px; border: 0; border-radius: 8px; background: var(--pale-pink); color: var(--deep-pink); cursor: pointer; }
+    .form-error { min-height: 1.25em; margin: 10px 0 0; color: #ad3458; font-size: .84rem; }
+    .dialog-actions { display: flex; justify-content: end; gap: 9px; margin-top: 16px; }
+
+    @keyframes appear { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 700px) { .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; } .section-heading { align-items: center; } .page { width: min(100% - 26px, 1050px); padding-top: 19px; } }
+    @media (max-width: 440px) { .gallery { grid-template-columns: 1fr; } .photo-card img { aspect-ratio: 1.15 / 1; } .top-note { max-width: 130px; text-align: right; } .section-heading > .button { padding: 0 14px; font-size: .86rem; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <div class="brand"><span class="brand-heart" aria-hidden="true">♡</span> Koko and CutieTeyTey</div>
+      <div class="top-note">Our Memoriess</div>
+    </header>
+
+    <section class="hero" aria-labelledby="page-title">
+      <p class="eyebrow">made by ur koko, for two of us</p>
+      <h1 id="page-title">You, me <span>&</span> our<br>little moments</h1>
+      <p class="hero-copy">The silly, sweet, and unforgettable bits of us.</p>
+      <button class="button" type="button" data-open-dialog><span aria-hidden="true">＋</span> Add a memory</button>
+    </section>
+
+    <section class="gallery-section" aria-labelledby="gallery-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="gallery-title">Our memory box <span aria-hidden="true">♡</span></h2>
+          <p class="memory-count" id="memory-count" aria-live="polite">A little collection of us</p>
+        </div>
+        <button class="button button-secondary" type="button" data-open-dialog><span aria-hidden="true">＋</span> Add photos</button>
+      </div>
+      <div class="empty-state" id="empty-state">
+        <div class="empty-illustration" aria-hidden="true">📸</div>
+        <h3>Your story starts here</h3>
+        <p>Add your favorite photos together and keep the sweet moments close.</p>
+      </div>
+      <div class="gallery" id="gallery" aria-label="Our photos"></div>
+    </section>
+
+    <footer>my favorite place is <span>anywhere with you</span> ♡</footer>
+  </main>
+
+  <div class="dialog-backdrop" id="upload-dialog" hidden>
+    <section class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title" aria-describedby="dialog-description">
+      <h2 id="dialog-title">Save a sweet moment <span aria-hidden="true">♡</span></h2>
+      <p class="dialog-intro" id="dialog-description">Choose one or more photos. They’ll stay saved in this browser.</p>
+      <form id="upload-form">
+        <label class="field-label" for="photo-files">Your photos</label>
+        <input class="file-input" id="photo-files" type="file" accept="image/*" multiple required>
+        <label class="field-label" for="photo-caption">A little caption</label>
+        <input class="text-input" id="photo-caption" type="text" maxlength="100" placeholder="Our favorite day ✨">
+        <p class="form-error" id="form-error" role="alert"></p>
+        <div class="dialog-actions">
+          <button class="button button-secondary" id="cancel-upload" type="button">Maybe later</button>
+          <button class="button" id="save-photos" type="submit">Save memories ♡</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <script>
+    (() => {
+      const databaseName = "our-little-corner";
+      const storeName = "memories";
+      const gallery = document.getElementById("gallery");
+      const emptyState = document.getElementById("empty-state");
+      const count = document.getElementById("memory-count");
+      const dialog = document.getElementById("upload-dialog");
+      const form = document.getElementById("upload-form");
+      const fileInput = document.getElementById("photo-files");
+      const captionInput = document.getElementById("photo-caption");
+      const errorMessage = document.getElementById("form-error");
+      const saveButton = document.getElementById("save-photos");
+      let database;
+
+      function openDatabase() {
+        return new Promise((resolve, reject) => {
+          const request = indexedDB.open(databaseName, 1);
+          request.onupgradeneeded = () => {
+            if (!request.result.objectStoreNames.contains(storeName)) {
+              request.result.createObjectStore(storeName, { keyPath: "id", autoIncrement: true });
+            }
+          };
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+      }
+
+      function getAllMemories() {
+        return new Promise((resolve, reject) => {
+          const request = database.transaction(storeName, "readonly").objectStore(storeName).getAll();
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+      }
+
+      function saveMemory(memory) {
+        return new Promise((resolve, reject) => {
+          const request = database.transaction(storeName, "readwrite").objectStore(storeName).add(memory);
+          request.onsuccess = () => resolve();
+          request.onerror = () => reject(request.error);
+        });
+      }
+
+      function deleteMemory(id) {
+        return new Promise((resolve, reject) => {
+          const request = database.transaction(storeName, "readwrite").objectStore(storeName).delete(id);
+          request.onsuccess = () => resolve();
+          request.onerror = () => reject(request.error);
+        });
+      }
+
+      function renderMemories(memories) {
+        gallery.replaceChildren();
+        emptyState.hidden = memories.length !== 0;
+        count.textContent = memories.length
+          ? `${memories.length} ${memories.length === 1 ? "memory" : "memories"} saved with love`
+          : "A little collection of us";
+
+        memories.sort((a, b) => b.createdAt - a.createdAt).forEach((memory) => {
+          const card = document.createElement("article");
+          card.className = "photo-card";
+
+          const image = document.createElement("img");
+          image.src = URL.createObjectURL(memory.image);
+          image.alt = memory.caption ? `Our memory: ${memory.caption}` : "A photo of us";
+          image.loading = "lazy";
+
+          const details = document.createElement("div");
+          details.className = "photo-details";
+          const text = document.createElement("div");
+          const caption = document.createElement("p");
+          caption.className = "photo-caption";
+          caption.textContent = memory.caption || "A little moment ♡";
+          const date = document.createElement("p");
+          date.className = "photo-date";
+          date.textContent = new Date(memory.createdAt).toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" });
+          text.append(caption, date);
+
+          const remove = document.createElement("button");
+          remove.className = "icon-button";
+          remove.type = "button";
+          remove.textContent = "×";
+          remove.setAttribute("aria-label", `Remove photo: ${memory.caption || "A little moment"}`);
+          remove.addEventListener("click", async () => {
+            remove.disabled = true;
+            try {
+              await deleteMemory(memory.id);
+              await refreshGallery();
+            } catch (error) {
+              remove.disabled = false;
+              showError("That photo couldn't be removed. Please try again.");
+              console.error("Could not remove memory:", error);
+            }
+          });
+
+          details.append(text, remove);
+          card.append(image, details);
+          gallery.append(card);
+        });
+      }
+
+      async function refreshGallery() {
+        renderMemories(await getAllMemories());
+      }
+
+      function showError(message) {
+        errorMessage.textContent = message;
+      }
+
+      function openDialog() {
+        showError("");
+        dialog.hidden = false;
+        fileInput.focus();
+      }
+
+      function closeDialog() {
+        dialog.hidden = true;
+        form.reset();
+        showError("");
+      }
+
+      document.querySelectorAll("[data-open-dialog]").forEach((button) => button.addEventListener("click", openDialog));
+      document.getElementById("cancel-upload").addEventListener("click", closeDialog);
+      dialog.addEventListener("click", (event) => {
+        if (event.target === dialog) closeDialog();
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !dialog.hidden) closeDialog();
+      });
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const files = Array.from(fileInput.files || []);
+        if (!files.length) {
+          showError("Choose at least one photo to add to your memory box.");
+          return;
+        }
+        const invalidFile = files.find((file) => !file.type.startsWith("image/"));
+        if (invalidFile) {
+          showError("Please choose image files only.");
+          return;
+        }
+
+        saveButton.disabled = true;
+        saveButton.textContent = "Saving...";
+        showError("");
+        try {
+          for (const file of files) {
+            await saveMemory({
+              image: file,
+              caption: captionInput.value.trim(),
+              createdAt: Date.now()
+            });
+          }
+          await refreshGallery();
+          closeDialog();
+        } catch (error) {
+          showError("Your photos couldn't be saved. Your browser may be out of storage space.");
+          console.error("Could not save memories:", error);
+        } finally {
+          saveButton.disabled = false;
+          saveButton.textContent = "Save memories ♡";
+        }
+      });
+
+      openDatabase()
+        .then((db) => {
+          database = db;
+          return refreshGallery();
+        })
+        .catch((error) => {
+          emptyState.hidden = false;
+          emptyState.querySelector("h3").textContent = "Your memory box couldn't open";
+          emptyState.querySelector("p").textContent = "Please try a different browser or check your browser's storage settings.";
+          document.querySelectorAll("[data-open-dialog]").forEach((button) => { button.disabled = true; });
+          console.error("Could not open memory storage:", error);
+        });
+    })();
+  </script>
+</body>
+</html>
