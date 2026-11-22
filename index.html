@@ -298,52 +298,88 @@
     }
 
     // DISPLAY SHARED PHOTOS
-    function renderMemories(memories) {
-      gallery.replaceChildren();
+    
+function renderMemories(memories) {
+  gallery.replaceChildren();
 
-      emptyState.hidden = memories.length !== 0;
+  emptyState.hidden = memories.length !== 0;
 
-      count.textContent = memories.length
-        ? `${memories.length} ${memories.length === 1 ? "memory" : "memories"} saved with love`
-        : "A little collection of us";
+  count.textContent = memories.length
+    ? `${memories.length} ${memories.length === 1 ? "memory" : "memories"} saved with love`
+    : "A little collection of us";
 
-      memories.forEach((memory) => {
-        const card = document.createElement("article");
-        card.className = "photo-card";
+  memories.forEach((memory) => {
+    const card = document.createElement("article");
+    card.className = "photo-card";
 
-        const image = document.createElement("img");
-        image.src = memory.image_url;
-        image.alt = memory.caption
-          ? `Our memory: ${memory.caption}`
-          : "A photo of us";
-        image.loading = "lazy";
+    const image = document.createElement("img");
+    image.src = memory.image_url;
+    image.alt = memory.caption
+      ? `Our memory: ${memory.caption}`
+      : "A photo of us";
+    image.loading = "lazy";
 
-        const details = document.createElement("div");
-        details.className = "photo-details";
+    const details = document.createElement("div");
+    details.className = "photo-details";
 
-        const text = document.createElement("div");
+    const text = document.createElement("div");
 
-        const caption = document.createElement("p");
-        caption.className = "photo-caption";
-        caption.textContent = memory.caption || "A little moment ♡";
+    const caption = document.createElement("p");
+    caption.className = "photo-caption";
+    caption.textContent = memory.caption || "A little moment ♡";
 
-        const date = document.createElement("p");
-        date.className = "photo-date";
-        date.textContent = new Date(memory.created_at).toLocaleDateString(
-          undefined,
+    const date = document.createElement("p");
+    date.className = "photo-date";
+    date.textContent = new Date(memory.created_at).toLocaleDateString(
+      undefined,
+      { month: "long", day: "numeric", year: "numeric" }
+    );
+
+    text.append(caption, date);
+
+    const remove = document.createElement("button");
+    remove.className = "icon-button";
+    remove.type = "button";
+    remove.textContent = "×";
+    remove.setAttribute("aria-label", "Remove this photo");
+
+    remove.addEventListener("click", async () => {
+      if (!confirm("Are you sure you want to remove this memory? ♡")) {
+        return;
+      }
+
+      remove.disabled = true;
+
+      try {
+        const response = await fetch(
+          `${memoriesUrl}?id=eq.${encodeURIComponent(memory.id)}`,
           {
-            month: "long",
-            day: "numeric",
-            year: "numeric"
+            method: "DELETE",
+            headers: {
+              apikey: SUPABASE_KEY,
+              Authorization: `Bearer ${SUPABASE_KEY}`
+            }
           }
         );
 
-        text.append(caption, date);
-        details.append(text);
-        card.append(image, details);
-        gallery.append(card);
-      });
-    }
+        if (!response.ok) {
+          throw new Error(await response.text());
+        }
+
+        await refreshGallery();
+
+      } catch (error) {
+        console.error("Could not remove memory:", error);
+        alert("Sorry, this memory couldn't be removed. Please try again.");
+        remove.disabled = false;
+      }
+    });
+
+    details.append(text, remove);
+    card.append(image, details);
+    gallery.append(card);
+  });
+}
 
     // REFRESH GALLERY
     async function refreshGallery() {
